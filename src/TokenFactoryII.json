@@ -1,0 +1,109 @@
+[
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "CreateToken",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "symbol",
+                "type": "string"
+            },
+            {
+                "internalType": "uint8",
+                "name": "decimals",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "supply",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "dev_wallet",
+                "type": "address"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "liquidityFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "reflectionFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "marketingFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "devFee",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Token.Fees",
+                "name": "fees",
+                "type": "tuple"
+            },
+            {
+                "internalType": "address",
+                "name": "_token",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "router",
+                "type": "address"
+            }
+        ],
+        "name": "createToken",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "tokens",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

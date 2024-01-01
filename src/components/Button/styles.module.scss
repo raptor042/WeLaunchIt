@@ -1,0 +1,16 @@
+.buttonRoot {
+  @apply tw-rounded-2xl
+  tw-flex
+  tw-items-center
+  tw-justify-center
+  tw-font-bold
+  tw-shadow-md
+  xs:tw-text-base
+  tw-text-md
+  tw-text-white
+  tw-cursor-pointer
+  tw-bg-[#05a95c]
+  hover:tw-bg-[#2f8354]
+  tw-duration-200
+  tw-select-none;
+}

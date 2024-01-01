@@ -1,0 +1,19 @@
+.alertRoot {
+    @apply hover:tw-bg-lightgrayL tw-relative tw-rounded-md tw-text-sm tw-p-4 tw-border tw-border-grey tw-border-l-4 tw-border-l-lightblue tw-my-2 tw-shadow-sm
+}
+
+.titleText {
+    @apply tw-text-lightblue tw-font-semi-bold tw-mb-1
+}
+
+.contentText {
+    @apply tw-text-greyD tw-w-[90%]
+}
+
+.exitButton {
+    @apply
+    tw-absolute
+    tw-top-5
+    tw-right-4
+    tw-cursor-pointer
+}

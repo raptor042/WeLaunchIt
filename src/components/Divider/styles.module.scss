@@ -1,0 +1,14 @@
+.dividerRoot {
+  p {
+    @apply tw-z-[1] tw-bg-white tw-absolute tw-px-3 tw-translate-x-[-50%] tw-left-[50%];
+  }
+  @apply tw-relative
+    tw-text-xxs
+    tw-font-bold
+    tw-text-[#05a95c]
+    tw-text-center;
+}
+.dividerRoot::before {
+  content: "";
+  @apply tw-absolute tw-w-full tw-left-0 tw-top-[6px] tw-border-t tw-border-grey;
+}

@@ -1,0 +1,23 @@
+.footerRoot {
+    @apply
+    tw-text-greyM
+    tw-text-sm
+}
+
+.footerLink {  
+    a {
+        @apply
+        tw-relative
+        tw-ml-6
+    }
+    @apply
+    tw-flex
+}
+.footerLink a:not(:first-child):after {
+    content: ".";
+    @apply
+    tw-text-md
+    tw-absolute
+    tw-bottom-1
+    tw-left-[-13px];
+}

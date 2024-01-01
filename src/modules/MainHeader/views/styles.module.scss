@@ -1,0 +1,37 @@
+.mainHeaderRoot {
+    @apply
+    tw-border-b
+    tw-border-grey
+    tw-top-0
+    tw-sticky
+    tw-bg-white
+    tw-z-50
+    tw-text-black
+}
+
+.mainHeaderNavbar {
+    @apply
+    tw-container
+    tw-m-auto
+    tw-flex
+    tw-items-center
+    tw-justify-between
+    tw-py-4
+    tw-px-5
+}
+
+.mainHeaderNav {
+    li {
+        @apply
+        tw-text-sm
+        tw-cursor-pointer
+        tw-mr-5
+        hover:tw-opacity-100
+        active:tw-text-background
+        tw-opacity-80
+        tw-duration-300
+    }
+    @apply
+    tw-flex
+    tw-justify-evenly
+}

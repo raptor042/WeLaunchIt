@@ -1,0 +1,30 @@
+.selectRoot {
+    appearance: none;
+
+    &.disabled {
+        @apply tw-bg-whiteblue;
+    }
+    &.warned {
+        @apply tw-outline-negative;
+    }
+
+    &:focus {
+        &.warned {
+            @apply tw-outline-negative;
+        }
+
+        @apply tw-outline-2 tw-outline-lightblueL;
+    }
+
+    @apply
+    tw-relative
+    tw-border
+    tw-border-grey
+    tw-rounded-lg
+    tw-w-full
+    tw-px-4
+    tw-py-3
+    tw-text-base
+    tw-bg-transparent
+    tw-z-[1]
+}

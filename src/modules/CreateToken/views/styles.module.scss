@@ -1,0 +1,15 @@
+.createTokenRoot {
+  a {
+    @apply tw-text-[#05a95c]
+        hover:tw-border-b
+        hover:tw-border-[#05a95c];
+  }
+  @apply tw-bg-white
+    tw-border
+    tw-shadow-lg
+    tw-rounded-2xl
+    tw-border-grey
+    tw-text-greyD
+    md:tw-min-w-[65%]
+    tw-w-full;
+}

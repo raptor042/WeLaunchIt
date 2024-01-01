@@ -1,0 +1,12 @@
+.checkboxRoot {
+    input {
+        @apply tw-mr-3
+    }
+
+    &.disabled {
+        @apply
+        tw-text-greyM
+    }
+
+    @apply tw-flex tw-p-1 tw-text-sm tw-mt-3 tw-mb-2
+}

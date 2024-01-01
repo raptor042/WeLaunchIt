@@ -1,0 +1,14 @@
+.radioGroupRoot {
+    input {
+        @apply
+        tw-mr-3
+    }
+    @apply
+    tw-rounded-sm
+    tw-border
+    tw-border-blue
+    tw-p-5
+    tw-bg-[#FAFAFE]
+    tw-text-sm
+    tw-font-semi-bold
+}

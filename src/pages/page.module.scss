@@ -1,0 +1,34 @@
+.root {
+  // background-image: linear-gradient(to bottom, #BCCCFC 60%, #DFEFFD 85%, #FFF 100%);
+  @apply tw-bg-[#ECEFFC];
+}
+.mainRoot {
+  @apply tw-container
+    tw-m-auto
+    md:tw-flex
+    md:tw-gap-5
+    tw-py-5
+    tw-px-3;
+}
+.telegram {
+  @apply tw-cursor-pointer
+    tw-fixed
+    tw-w-10
+    tw-h-10
+    tw-right-14
+    tw-bottom-16
+    hover:tw-opacity-80;
+}
+.topText {
+  margin: auto;
+  padding: 1.25rem;
+  padding-top: 3rem;
+  & a {
+    color: #05a95c;
+    text-decoration-color: #05a95c;
+    text-decoration-line: underline;
+  }
+  @apply tw-text-greyD
+  tw-container
+  tw-text-md;
+}

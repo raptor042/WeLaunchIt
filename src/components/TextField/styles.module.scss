@@ -1,0 +1,28 @@
+.textFieldRoot {
+  appearance: none;
+
+  &.readonly {
+    @apply tw-bg-lightgrayL tw-cursor-default tw-outline-none;
+  }
+  &.warned {
+    @apply tw-outline-negative;
+  }
+
+  &:focus {
+    &.readonly {
+      @apply
+      tw-outline-none
+    }
+    &.warned {
+      @apply tw-outline-negative;
+    }
+
+    @apply tw-outline-2 tw-outline-lightblueS;
+  }
+
+  @apply -tw-outline-offset-1 tw-border tw-border-grey tw-tracking-wide tw-rounded-lg tw-w-full tw-px-4 tw-py-3 tw-text-sm tw-bg-transparent
+}
+
+.message {
+  @apply tw-absolute tw-top-14 tw-text-negative tw-italic lg:tw-text-xxs tw-text-xxxs tw-w-[105%] tw-leading-3
+}

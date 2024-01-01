@@ -1,0 +1,60 @@
+.rangeRoot {
+  input {
+    appearance: none;
+    &::-webkit-slider-runnable-track {
+      height: 9px;
+      cursor: pointer;
+      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+      background: #00000010;
+      border-radius: 25px;
+      border: 1px solid #00000050;
+    }
+    &::-webkit-slider-thumb {
+      box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+      border: 1px solid #ffffff80;
+      height: 14px;
+      width: 14px;
+      border-radius: 7px;
+      background: #05a95c;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -3.6px;
+      &:hover {
+        background: #0fd324;
+      }
+    }
+    @apply tw-w-[80%]
+        tw-rounded-sm
+        tw-cursor-pointer;
+  }
+  label {
+    @apply tw-inline-block
+        tw-rounded-md
+        tw-text-center
+        tw-align-middle
+        tw-ml-3
+        tw-w-12
+        tw-h-10
+        tw-p-2
+        tw-items-center
+        tw-bg-lightgray
+        tw-opacity-90
+        tw-text-base
+        tw-font-semi-bold;
+  }
+  span {
+    @apply tw-inline-block
+        tw-ml-1
+        tw-h-5
+        tw-align-bottom
+        tw-rounded-md
+        tw-p-2
+        tw-py-0
+        tw-px-2
+        tw-border
+        tw-border-blue
+        tw-text-xs
+        tw-text-blue;
+  }
+  @apply tw-w-full;
+}
