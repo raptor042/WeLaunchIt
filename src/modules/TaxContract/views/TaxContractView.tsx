@@ -452,7 +452,7 @@ const TaxContractView = () => {
             <div>{tMark}</div>
             <div className="tw-ml-3">
               <div className="tw-text-greyM">Contract Summary</div>
-              <div className="tw-text-base tw-font-bold">Tax Contract I</div>
+              <div className="tw-text-base tw-font-bold">Standard</div>
             </div>
           </div>
           {/* <div className="tw-text-greyM">
@@ -586,7 +586,7 @@ const TaxContractView = () => {
             <div>{tMark}</div>
             <div className="tw-ml-3">
               <div className="tw-text-greyM">Contract Summary</div>
-              <div className="tw-text-base tw-font-bold">Tax Contract II</div>
+              <div className="tw-text-base tw-font-bold">Rewards</div>
             </div>
           </div>
           {/* <div className="tw-text-greyM">
@@ -694,7 +694,7 @@ const TaxContractView = () => {
             <div>{tMark}</div>
             <div className="tw-ml-3">
               <div className="tw-text-greyM">Contract Summary</div>
-              <div className="tw-text-base tw-font-bold">Tax Contract III</div>
+              <div className="tw-text-base tw-font-bold">Reflections</div>
             </div>
           </div>
           {/* <div className="tw-text-greyM">
