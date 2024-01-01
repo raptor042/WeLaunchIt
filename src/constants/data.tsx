@@ -1,7 +1,7 @@
 export const tokenTypeList: { [key: number]: string } = {
-  1: "Tax Contract I",
-  2: "Tax Contract II",
-  3: "Tax Contract III"
+  1: "Standard",
+  2: "Rewards",
+  3: "Reflections"
 };
 
 export const networkTypeList: { [key: number]: string } = {

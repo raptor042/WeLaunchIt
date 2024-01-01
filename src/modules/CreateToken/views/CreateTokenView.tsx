@@ -167,7 +167,7 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
         </div>
         <div className="tw-p-7">
         <div className="tw-mb-6">
-            <LabelComponent value="Tax Contract" />
+            <LabelComponent value="Contract" />
             <SelectComponent
               value={tokenType.toString()}
               setValue={setTokenType}
