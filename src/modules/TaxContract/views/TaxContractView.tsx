@@ -69,22 +69,10 @@ const TaxContractView = () => {
     if (tokenType == 1) {
       if (tokenName.length === 0) {
         addToast("Token Name is required!", { appearance: "warning" });
-      } else if (!validateTokenName(tokenName)) {
-        addToast("Token Name Length must be between 3 to 64!", {
-          appearance: "warning"
-        });
       } else if (symbol.length === 0) {
         addToast("Symbol is required!", { appearance: "warning" });
-      } else if (!validateSymbol(symbol)) {
-        addToast("Symbol Length must be between 3 to 6!", {
-          appearance: "warning"
-        });
       } else if (totalSupply === 0) {
         addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (totalSupply < 1000) {
-        addToast("Total Supply can't be lower than 1000!", {
-          appearance: "warning"
-        });
       } else if (marketingWallet.length === 0) {
         addToast("Marketing Wallet Address is required!", {
           appearance: "warning"
@@ -192,22 +180,10 @@ const TaxContractView = () => {
     } else if (tokenType == 2) {
       if (tokenName.length === 0) {
         addToast("Token Name is required!", { appearance: "warning" });
-      } else if (!validateTokenName(tokenName)) {
-        addToast("Token Name Length must be between 3 to 64!", {
-          appearance: "warning"
-        });
       } else if (symbol.length === 0) {
         addToast("Symbol is required!", { appearance: "warning" });
-      } else if (!validateSymbol(symbol)) {
-        addToast("Symbol Length must be between 3 to 6!", {
-          appearance: "warning"
-        });
       } else if (totalSupply === 0) {
         addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (totalSupply < 1000) {
-        addToast("Total Supply can't be lower than 1000!", {
-          appearance: "warning"
-        });
       } else if (devWallet.length === 0) {
         addToast("Dev Wallet Address is required!", { appearance: "warning" });
       } else if (!validateAddress(devWallet)) {
@@ -305,22 +281,10 @@ const TaxContractView = () => {
     } else if (tokenType == 3) {
       if (tokenName.length === 0) {
         addToast("Token Name is required!", { appearance: "warning" });
-      } else if (!validateTokenName(tokenName)) {
-        addToast("Token Name Length must be between 3 to 64!", {
-          appearance: "warning"
-        });
       } else if (symbol.length === 0) {
         addToast("Symbol is required!", { appearance: "warning" });
-      } else if (!validateSymbol(symbol)) {
-        addToast("Symbol Length must be between 3 to 6!", {
-          appearance: "warning"
-        });
       } else if (totalSupply === 0) {
         addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (totalSupply < 1000) {
-        addToast("Total Supply can't be lower than 1000!", {
-          appearance: "warning"
-        });
       } else if (ownerWallet.length === 0) {
         addToast("Owner Wallet Address is required!", { appearance: "warning" });
       } else if (!validateAddress(ownerWallet)) {

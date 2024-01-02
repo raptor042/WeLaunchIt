@@ -190,7 +190,6 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
               <TextFieldComponent
                 value={tokenName}
                 setValue={setTokenName}
-                validator={validateTokenName}
                 placeholder="Token Name (BINANCE Coin)"
               />
             </div>
@@ -199,7 +198,6 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
               <TextFieldComponent
                 value={symbol}
                 setValue={setSymbol}
-                validator={validateSymbol}
                 placeholder="Token Symbol (BNB)"
               />
             </div>
@@ -210,9 +208,7 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
                 setValue={setTotalSupply}
                 number
                 step={1}
-                min={1000}
-                max={Number.MAX_SAFE_INTEGER}
-                placeholder="Min 1000"
+                placeholder="Token Supply (1000)"
               />
             </div>
           </div>
