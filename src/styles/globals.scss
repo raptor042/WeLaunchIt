@@ -172,3 +172,37 @@ li {
 svg {
   @apply tw-stroke-[1.5] tw-scale-100 tw-pb-1;
 }
+
+@keyframes ldio-l0gjoxrkhed {
+  0% { transform: translate(-50%,-50%) rotate(0deg); }
+  100% { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.ldio-l0gjoxrkhed div {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 20px solid #06a95c;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+.ldio-l0gjoxrkhed div {
+  animation: ldio-l0gjoxrkhed 1s linear infinite;
+  top: 100px;
+  left: 100px
+}
+.loadingio-spinner-rolling-a78mw97vpif {
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  overflow: hidden;
+  background: #ffffff;
+}
+.ldio-l0gjoxrkhed {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0;
+}
+.ldio-l0gjoxrkhed div { box-sizing: content-box; }

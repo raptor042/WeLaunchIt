@@ -2,6 +2,7 @@ import {
   createContext,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useState
 } from "react";
@@ -55,7 +56,7 @@ export const Web3Context = createContext<IWeb3Context>({
   account: undefined,
   isConnected: false,
   chainId: 1,
-  switchNetwork: () => {}
+  switchNetwork: () => {},
 });
 
 type Web3ProviderPropType = {
@@ -238,7 +239,7 @@ export const Web3Provider = (props: Web3ProviderPropType) => {
         account,
         isConnected,
         chainId,
-        switchNetwork
+        switchNetwork,
       }}
     >
       {props.children}

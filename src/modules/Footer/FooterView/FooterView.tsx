@@ -5,7 +5,7 @@ const FooterView = () => {
   return (
     <div className={styles.footerRoot}>
       <div className="tw-container tw-m-auto tw-p-5 tw-flex tw-justify-between">
-        <div>Copyright © 2023 We Launch It.</div>
+        <div>Copyright © 2024 We Launch It.</div>
         {/* <div className={styles.footerLink}>
                     <a href='#'>
                         {twitterMark}

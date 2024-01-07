@@ -97,6 +97,39 @@ export interface IFormContext {
 
   tokenType: number;
   setTokenType: Function;
+
+  pairAddress: string;
+  setPairAddress: Function;
+
+  pair: string;
+  setPair: Function;
+
+  lpToken: string;
+  setLpToken: Function;
+
+  lpTokenAddress: string;
+  setLpTokenAddress: Function;
+
+  lpOwnerAddress: string;
+  setLpOwnerAddress: Function;
+
+  lpTokenAmount: number;
+  setLpTokenAmount: Function;
+
+  lpTokenRatio: number;
+  setLpTokenRatio: Function;
+
+  lpTokenBalance: number;
+  setLpTokenBalance: Function;
+
+  unlockDate: Date;
+  setUnlockDate: Function;
+
+  lockFee: number;
+  setLockFee: Function;
+
+  lockDescription: string;
+  setLockDescription: Function;
 }
 
 export const FormContext = createContext<IFormContext>({
@@ -164,6 +197,28 @@ export const FormContext = createContext<IFormContext>({
   setNetworkType: () => {},
   tokenType: 1,
   setTokenType: () => {},
+  pairAddress: "",
+  setPairAddress: () => {},
+  pair: "",
+  setPair: () => {},
+  lpToken: "",
+  setLpToken: () => {},
+  lpTokenAddress: "",
+  setLpTokenAddress: () => {},
+  lpOwnerAddress: "",
+  setLpOwnerAddress: () => {},
+  lpTokenAmount: 0,
+  setLpTokenAmount: () => {},
+  lpTokenRatio: 0,
+  setLpTokenRatio: () => {},
+  lpTokenBalance: 0,
+  setLpTokenBalance: () => {},
+  unlockDate: new Date(),
+  setUnlockDate: () => {},
+  lockFee: 0,
+  setLockFee: () => {},
+  lockDescription: "",
+  setLockDescription: () => {},
 });
 
 type FormProviderPropType = {
@@ -217,6 +272,22 @@ export const FormProvider = (props: FormProviderPropType) => {
   const [routerType, setRouterType] = useState(routerTypeList[0]);
 
   const [tokenType, setTokenType] = useState(1)
+
+  const [pairAddress, setPairAddress] = useState("")
+  const [pair, setPair] = useState("")
+
+  const [lpToken, setLpToken] = useState("")
+  const [lpTokenAddress, setLpTokenAddress] = useState("")
+  const [lpOwnerAddress, setLpOwnerAddress] = useState("")
+  const [lpTokenAmount, setLpTokenAmount] = useState(0)
+  const [lpTokenRatio, setLpTokenRatio] = useState(0)
+  const [lpTokenBalance, setLpTokenBalance] = useState(0)
+
+  const [unlockDate, setUnlockDate] = useState(new Date())
+
+  const [lockFee, setLockFee] = useState(0)
+
+  const [lockDescription, setLockDescription] = useState("")
 
   useEffect(() => {
     setNetworkType(chainId);
@@ -292,7 +363,29 @@ export const FormProvider = (props: FormProviderPropType) => {
         maxWalletAmount,
         setMaxWalletAmount,
         routerType,
-        setRouterType
+        setRouterType,
+        pairAddress,
+        setPairAddress,
+        pair,
+        setPair,
+        lpToken,
+        setLpToken,
+        lpTokenAddress,
+        setLpTokenAddress,
+        lpOwnerAddress,
+        setLpOwnerAddress,
+        lpTokenAmount,
+        setLpTokenAmount,
+        lpTokenRatio,
+        setLpTokenRatio,
+        lpTokenBalance,
+        setLpTokenBalance,
+        unlockDate,
+        setUnlockDate,
+        lockFee,
+        setLockFee,
+        lockDescription,
+        setLockDescription,
       }}
     >
       {props.children}

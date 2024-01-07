@@ -64,8 +64,6 @@ const TaxContractView = () => {
   const handleClick = useCallback(async () => {
     if (!isConnected) return;
 
-    toggleDeploying(true);
-
     if (tokenType == 1) {
       if (tokenName.length === 0) {
         addToast("Token Name is required!", { appearance: "warning" });
@@ -88,6 +86,7 @@ const TaxContractView = () => {
       } else if (buyFee + sellFee > 30) {
         addToast(totalFeeLimitExceed, { appearance: "warning" });
       } else {
+        toggleDeploying(true);
         if (!web3) return;
         const contract = new web3.eth.Contract(
           tokenIABI as any[],

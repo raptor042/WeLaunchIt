@@ -30,6 +30,11 @@ export const ChainIds = {
   product: [1, 56]
 };
 
+export const chains: { [key: number]: string } = {
+  1: "ether",
+  56: "bsc"
+}
+
 export const SwapRouters: { [key: number]: any } = {
   5: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
   97: "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
@@ -52,7 +57,8 @@ export const ContractAddresses: { [key: number]: any } = {
   56: [
     "0xCc89F132E9cdd6e88Fa435c69Ef5e805267Bf803",
     "0x5901bD5a5b4dCf85A9FA59300dc8212c8210850f",
-    "0xB8411eBcEf559881Df0229a48C1831417231849d"
+    "0xB8411eBcEf559881Df0229a48C1831417231849d",
+    "0x57a871d20B27d49fccE044F3406dFe023780b0dB"
   ]
 };
 
@@ -117,3 +123,4 @@ export const antiBotOptionList = [
 
 export const minFeeLimit = 0;
 export const maxFeeLimit = 15;
+export const DEXTOOLS_API_KEY = "W3dNs10dyS12l5tz0ovrdADAOheJHN5f";
