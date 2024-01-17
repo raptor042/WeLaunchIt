@@ -31,7 +31,7 @@ export default function LockPage() {
                 <div className={styles.mainRoot}>
                     <div className="md:tw-w-full md:tw-flex-[20%]"></div>
                     <div className="tw-w-full tw-flex-grow">
-                        <LockInfoContainer address={address} />
+                        <LockInfoContainer address={address as string} />
                     </div>
                     <div className="md:tw-w-full md:tw-flex-[20%]"></div>
                 {/* <div className={styles.telegram}>
