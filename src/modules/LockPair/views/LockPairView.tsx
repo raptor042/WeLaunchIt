@@ -128,6 +128,7 @@ export const LockPairView: React.FC<Props> = memo<Props>(
               setLpTokenAddress(pairAddress)
 
               setLoader(false)
+              router.push("/locker")
             } catch (error) {
               console.log(error)
               setLoader(false)
@@ -155,6 +156,7 @@ export const LockPairView: React.FC<Props> = memo<Props>(
               setTokenBalance(Number(balance))
             
               setLoader(false)
+              router.push("/locker")
             } catch (error) {
               console.log(error)
               setLoader(false)
@@ -176,10 +178,6 @@ export const LockPairView: React.FC<Props> = memo<Props>(
       walletAddress, 
       web3
     ]);
-
-    const handleClick = () => {
-      router.push("/lock")
-    }
 
     return (
     <div className={styles.lockPairRoot}>
@@ -255,44 +253,6 @@ export const LockPairView: React.FC<Props> = memo<Props>(
                   />
                 </div>}
             </div>
-            </>}
-            {pair.length > 0 && pairAddress.length > 0 && <>
-              <DividerComponent value="PAIR INFORMATION" />
-              <div className="tw-mb-6 tw-mt-10 tw-flex tw-gap-5 tw-items-center">
-                <div className="tw-w-full tw-flex-grow">
-                  <LabelComponent value="Pair" required />
-                  <TextFieldComponent
-                    readonly
-                    value={pair}
-                    placeholder={pair}
-                  />
-                </div>
-                <div className="tw-w-full tw-flex-[20%] tw-pt-10">
-                <Button
-                  onClick={handleClick}
-                  className="tw-p-2"
-                >Continue</Button>
-                </div>
-              </div>
-            </>}
-            {token.length > 0 && tokenAddress.length > 0 && <>
-              <DividerComponent value="TOKEN INFORMATION" />
-              <div className="tw-mb-6 tw-mt-10 tw-flex tw-gap-5 tw-items-center">
-                <div className="tw-w-full tw-flex-grow">
-                  <LabelComponent value="Token" required />
-                  <TextFieldComponent
-                    readonly
-                    value={pair}
-                    placeholder={pair}
-                  />
-                </div>
-                <div className="tw-w-full tw-flex-[20%] tw-pt-10">
-                <Button
-                  onClick={handleClick}
-                  className="tw-p-2"
-                >Continue</Button>
-                </div>
-              </div>
             </>}
           {/* <AlertComponent
             title="ATTENTION!"

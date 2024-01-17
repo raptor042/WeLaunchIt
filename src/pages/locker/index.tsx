@@ -1,6 +1,6 @@
-import LockPairContainer from "@dex/modules/LockPair/containers/LockPairContainer";
+import LockLiquidityContainer from "@dex/modules/LockLiquidity/containers/LockLiquidityContainer";
+import LockContractContainer from "@dex/modules/LockContract/containers/LockContractContainer";
 import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
-import LocksContainer from "@dex/modules/Locks/containers/LocksContainer";
 
 import styles from "../page.module.scss";
 import NavBarComponent from "@dex/components/NavBar/NavBarComponent";
@@ -22,14 +22,14 @@ export default function LockPage() {
                 </span>
                 </div>
                 <div className="tw-w-full">
-                    <NavBarComponent value="/pair" />
+                    <NavBarComponent value="/lock" />
                 </div>
                 <div className={styles.mainRoot}>
                 <div className="tw-w-full tw-flex-grow">
-                    <LockPairContainer />
+                    <LockLiquidityContainer />
                 </div>
                 <div className="md:tw-w-full md:tw-flex-[60%]">
-                    <LocksContainer />
+                    <LockContractContainer />
                 </div>
                 {/* <div className={styles.telegram}>
                     <a href="https://t.me/welaunchit" target="blank">

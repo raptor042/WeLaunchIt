@@ -14,9 +14,6 @@ const NavBarComponent: React.FC<Props> = memo<Props>(({ value }) => (
     <div className={clsx("tw-flex", "hover:tw-opacity-80", value == "/" ? "tw-text-[#06A95C]" : "tw-text-greyD", "tw-justify-center", "tw-font-semi-bold", "tw-text-md")}>
         <Link href={"/"}>Contract Factory</Link>
     </div>
-    <div className={clsx("tw-flex", "hover:tw-opacity-80", value == "/pair" ? "tw-text-[#06A95C]" : "tw-text-greyD", "tw-justify-center", "tw-font-semi-bold", "tw-text-md")}>
-        <Link href={"/pair"}>Pair</Link>
-    </div>
     <div className={clsx("tw-flex", "hover:tw-opacity-80", value == "/lock" ? "tw-text-[#06A95C]" : "tw-text-greyD", "tw-justify-center", "tw-font-semi-bold", "tw-text-md")}>
         <Link href={"/lock"}>Lock</Link>
     </div>
