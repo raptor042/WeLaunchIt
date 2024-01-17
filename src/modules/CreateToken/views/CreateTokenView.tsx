@@ -150,7 +150,14 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
       setBuyFeeWarn,
       setSellFeeWarn,
       setBuyFee,
-      setSellFee
+      setSellFee,
+      devFee,
+      liquidityFee,
+      lpFee,
+      marketingFee,
+      reflectionFee,
+      taxFee,
+      tokenType
     ]);
 
     return (

@@ -44,7 +44,7 @@ import { Web3Context } from "@dex/contexts/Web3";
 import pairABI from "@dex/Pair.json"
 import pairERC20ABI from "@dex/Pair(ERC20).json"
 import { useToasts } from "react-toast-notifications";
-import ButtonComponent from "@dex/components/Button/ButtonComponent";
+import Button from "@dex/components/Button/ButtonComponent";
 import { useRouter } from "next/router";
 import { Audio } from "react-loader-spinner";
 
@@ -166,7 +166,15 @@ export const LockPairView: React.FC<Props> = memo<Props>(
       pairAddress,
       setPairAddress,
       tokenAddress,
-      setTokenAddress
+      setTokenAddress,
+      setLpToken, 
+      setLpTokenAddress, 
+      setLpTokenBalance, 
+      setPair, 
+      setToken, 
+      setTokenBalance, 
+      walletAddress, 
+      web3
     ]);
 
     const handleClick = () => {
@@ -260,11 +268,10 @@ export const LockPairView: React.FC<Props> = memo<Props>(
                   />
                 </div>
                 <div className="tw-w-full tw-flex-[20%] tw-pt-10">
-                <ButtonComponent 
-                  children={"Continue"}
+                <Button
                   onClick={handleClick}
                   className="tw-p-2"
-                />
+                >Continue</Button>
                 </div>
               </div>
             </>}
@@ -280,11 +287,10 @@ export const LockPairView: React.FC<Props> = memo<Props>(
                   />
                 </div>
                 <div className="tw-w-full tw-flex-[20%] tw-pt-10">
-                <ButtonComponent 
-                  children={"Continue"}
+                <Button
                   onClick={handleClick}
                   className="tw-p-2"
-                />
+                >Continue</Button>
                 </div>
               </div>
             </>}

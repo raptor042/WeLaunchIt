@@ -406,7 +406,12 @@ const TaxContractView = () => {
     tokenType,
     // routerType,
     // networkType,
-    account
+    account,
+    liquidityFee, 
+    maxTxAmount, 
+    ownerWallet, 
+    sellMaxAmount,
+    taxFee
   ]);
 
   return (

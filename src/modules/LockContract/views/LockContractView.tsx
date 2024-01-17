@@ -45,6 +45,18 @@ const LockContractView = () => {
   const { isConnected, account, web3, chainId, setUserLockedPair } = useContext(Web3Context);
   const [isLocking, toggleLocking] = useState<boolean>(false);
 
+  const getTimeDiff = () => {
+    const date0 = new Date().getTime()
+    const date1 = unlockDate.getTime()
+    const timeInMilliSecs = date1 - date0
+    
+    if(timeInMilliSecs < 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   const handleClick = useCallback(async () => {
     if (!isConnected) return;
 
@@ -169,20 +181,18 @@ const LockContractView = () => {
     lpOwnerAddress,
     lpTokenAmount,
     unlockDate,
-    lockDescription
+    lockDescription,
+    account,
+    addToast,
+    chainId,
+    getTimeDiff,
+    isConnected,
+    lockFee,
+    web3,
+    isConnected,
+    lockType,
+    tokenAddress
   ]);
-
-  const getTimeDiff = () => {
-    const date0 = new Date().getTime()
-    const date1 = unlockDate.getTime()
-    const timeInMilliSecs = date1 - date0
-    
-    if(timeInMilliSecs < 0) {
-      return true
-    } else {
-      return false
-    }
-  }
 
   return (
     <div className={styles.taxContractRoot}>

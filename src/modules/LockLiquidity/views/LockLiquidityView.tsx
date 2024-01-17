@@ -47,12 +47,12 @@ import pairABI from "@dex/Pair.json"
 import WeLockIt from "@dex/WeLockIt.json"
 import pairERC20ABI from "@dex/Pair(ERC20).json"
 import { useToasts } from "react-toast-notifications";
-import ButtonComponent from "@dex/components/Button/ButtonComponent";
 
 import { FaArrowLeft, FaCalendar } from "react-icons/fa";
 import Datepicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
 import Link from "next/link";
+import Button from "@dex/components/Button/ButtonComponent";
 
 type Props = {
   walletAddress?: string;
@@ -122,7 +122,14 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
       getLockFee()
     }, [
       lpTokenRatio,
-      setLpTokenRatio
+      setLpTokenRatio,
+      chainId, 
+      lockType, 
+      lpTokenBalance, 
+      setLockFee, 
+      setLpTokenAmount, 
+      tokenBalance, 
+      web3
     ]);
 
     const handleDate = () => {
@@ -202,11 +209,10 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
                 />
               </div>
               <div className="tw-w-full tw-flex-[20%]">
-                <ButtonComponent 
-                  children={"MAX"}
+                <Button 
                   onClick={setMax}
                   className="tw-p-2"
-                />
+                >MAX</Button>
               </div>
             </div>
             <DividerComponent value="LP UNLOCK DATE" />

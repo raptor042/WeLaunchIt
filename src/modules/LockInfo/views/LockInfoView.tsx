@@ -171,7 +171,14 @@ export const LockInfoView: React.FC<Props> = memo<Props>(
       if(lockId) {
         getPrice()
       }
-    }, []);
+    }, [
+      address, 
+      chainId, 
+      cycle, 
+      lockId, 
+      walletAddress,
+      web3
+    ]);
 
     return (
     <div className={styles.lockLiquidityRoot}>

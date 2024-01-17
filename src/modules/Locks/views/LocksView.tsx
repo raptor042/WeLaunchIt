@@ -56,54 +56,12 @@ const LocksView = () => {
       }
     }
     getLocks()
-  }, [lockType])
-
-  const getPair = async (pairAddress: string) => {
-    if(!web3) return;
-    const pair = new web3.eth.Contract(
-      pairABI.abi as any[],
-      pairAddress
-    );
-    try {
-      const token0 = await pair.methods.token0().call()
-      const token1 = await pair.methods.token1().call()
-      console.log(token0, token1)
-
-      const tokenA = new web3.eth.Contract(
-        pairERC20ABI.abi as any[],
-        token0
-      );
-      const tokenB = new web3.eth.Contract(
-        pairERC20ABI.abi as any[],
-        token1
-      );
-
-      const symbol0 = await tokenA.methods.symbol().call()
-      const symbol1 = await tokenB.methods.symbol().call()
-      console.log(symbol0, symbol1)
-
-      setPair(`${symbol0}/${symbol1}`)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const getToken = async (tokenAddress: string) => {
-    if(!web3) return;
-    const token = new web3.eth.Contract(
-      pairERC20ABI.abi as any[],
-      tokenAddress
-    );
-    try {
-      const name = await token.methods.name().call()
-      const symbol = await token.methods.symbol().call()
-      console.log(name, symbol)
-
-      setToken(`${name}/${symbol}`)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  }, [
+    lockType,
+    account, 
+    chainId, 
+    web3
+  ])
 
   return (
     <div className={styles.LocksRoot}>
