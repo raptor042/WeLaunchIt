@@ -3,6 +3,7 @@ import LockContractContainer from "@dex/modules/LockContract/containers/LockCont
 import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
 
 import styles from "../page.module.scss";
+import NavBarComponent from "@dex/components/NavBar/NavBarComponent";
 
 export default function LockPage() {
     return (
@@ -19,6 +20,9 @@ export default function LockPage() {
                     for free.<br></br>
                     <span className="tw-font-bold">Partnership:</span>&nbsp; Make A Crypto Website For Free With <a href="https://t.me/WebsiteAIBot" className="tw-font-semi-bold">WebsiteAIBot</a>{" "}
                 </span>
+                </div>
+                <div className="tw-w-full">
+                    <NavBarComponent value="/lock" />
                 </div>
                 <div className={styles.mainRoot}>
                 <div className="tw-w-full tw-flex-grow">

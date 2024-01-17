@@ -29,7 +29,8 @@ import {
   antiBotOptionList,
   minFeeLimit,
   maxFeeLimit,
-  tokenTypeList
+  tokenTypeList,
+  lockTypeList
 } from "@dex/constants/data";
 import {
   buyFeeLimitExceed,
@@ -64,9 +65,17 @@ export const LockPairView: React.FC<Props> = memo<Props>(
       setPair,
       setLpToken,
       setLpTokenAddress,
-      setLpTokenBalance
+      setLpTokenBalance,
+      lockType,
+      setLockType,
+      token,
+      tokenAddress,
+      setToken,
+      setTokenAddress,
+      tokenBalance,
+      setTokenBalance,
     } = useContext(FormContext);
-    const { web3 } = useContext(Web3Context);
+    const { web3, setUserLockedPair } = useContext(Web3Context);
     const { addToast } = useToasts();
     const [loader, setLoader] = useState(false)
 
@@ -74,80 +83,90 @@ export const LockPairView: React.FC<Props> = memo<Props>(
 
     useEffect(() => {
         console.log(validateAddress(pairAddress))
-        if(validateAddress(pairAddress)) {
+        console.log(validateAddress(tokenAddress))
+        if(setPairAddress && validateAddress(pairAddress)) {
           setLoader(true)
-            const getPair = async () => {
-                if (!web3) return;
-                const pair = new web3.eth.Contract(
-                    pairABI.abi as any[],
-                    pairAddress
-                );
-                try {
-                    const token0 = await pair.methods.token0().call()
-                    const token1 = await pair.methods.token1().call()
-                    console.log(token0, token1)
 
-                    const tokenA = new web3.eth.Contract(
-                    pairERC20ABI.abi as any[],
-                    token0
-                    );
-                    const tokenB = new web3.eth.Contract(
-                    pairERC20ABI.abi as any[],
-                    token1
-                    );
+          const getPair = async () => {
+            if(!web3) return;
+            const token = new web3.eth.Contract(
+              pairERC20ABI.abi as any[],
+              pairAddress
+            );
+            const pair = new web3.eth.Contract(
+              pairABI.abi as any[],
+              pairAddress
+            );
+            try {
+              const token0 = await pair.methods.token0().call()
+              const token1 = await pair.methods.token1().call()
+              console.log(token0, token1)
 
-                    const symbol0 = await tokenA.methods.symbol().call()
-                    const symbol1 = await tokenB.methods.symbol().call()
-                    console.log(symbol0, symbol1)
-
-                    setPair(`${symbol0}/${symbol1} - ${pairAddress.slice(0, 4) + "..." + pairAddress.slice(-3)}`)
-                    setLoader(false)
-
-                    const pairSlug = `${symbol0}/${symbol1} - ${pairAddress.slice(0, 4) + "..." + pairAddress.slice(-3)} + `
-                    const pairs = localStorage?.getItem("pairs")
-                    if(pairs) {
-                      const pair_ = pairs.split("+").filter(pair => pair.split("-")[0] == pairSlug.split("-")[0])
-                      if(pair_.length > 0) {
-                        return;
-                      } else {
-                        const _pairs = localStorage.setItem("pairs", `${pairs + pairSlug}`)
-                      }
-                    } else {
-                      const _pairs = localStorage.setItem("pairs", pairSlug)
-                    }
-                } catch (getPairError: any) {
-                    console.log(getPairError)
-                    addToast("An error occured while trying to retrieve pair info!", { appearance: "error" });
-                }
-            }
-            getPair()
-
-            const getToken = async () => {
-              if(!web3) return;
-              const token = new web3.eth.Contract(
+              const tokenA = new web3.eth.Contract(
                 pairERC20ABI.abi as any[],
-                pairAddress
+                token0
               );
-              try {
-                const name = await token.methods.name().call()
-                const symbol = await token.methods.symbol().call()
-                const balanceOf = await token.methods.balanceOf(walletAddress).call()
-                console.log(name, symbol, balanceOf, walletAddress)
-        
-                setLpToken(`${name}+${symbol}`)
-                setLpTokenBalance(Number(balanceOf))
-                setLpTokenAddress(pairAddress)
-              } catch (error) {
-                console.log(error)
-                addToast("An error occured while trying to retrieve LP token data.")
-              }
-            }
+              const tokenB = new web3.eth.Contract(
+                pairERC20ABI.abi as any[],
+                token1
+              );
 
-            getToken()
+              const symbol0 = await tokenA.methods.symbol().call()
+              const symbol1 = await tokenB.methods.symbol().call()
+              console.log(symbol0, symbol1)
+
+              setPair(`${symbol0}/${symbol1} -- ${pairAddress.slice(0, 4) + "..." + pairAddress.slice(-3)}`)
+
+              const name = await token.methods.name().call()
+              const symbol = await token.methods.symbol().call()
+              const balanceOf = await token.methods.balanceOf(walletAddress).call()
+              const balance = web3.utils.fromWei(balanceOf, "ether")
+              console.log(name, symbol, balanceOf, balance, walletAddress)
+      
+              setLpToken(`${name}+${symbol}`)
+              setLpTokenBalance(Number(balance).toFixed(7))
+              setLpTokenAddress(pairAddress)
+
+              setLoader(false)
+            } catch (error) {
+              console.log(error)
+              setLoader(false)
+            }
+          }
+          getPair()
+        } else if(setTokenAddress && validateAddress(tokenAddress)) {
+          setLoader(true)
+
+          const getToken = async () => {
+            if(!web3) return;
+            const token = new web3.eth.Contract(
+              pairERC20ABI.abi as any[],
+              tokenAddress
+            );
+            try {
+              const name = await token.methods.name().call()
+              const symbol = await token.methods.symbol().call()
+              const balanceOf = await token.methods.balanceOf(walletAddress).call()
+              const balance = web3.utils.fromWei(balanceOf, "ether")
+              console.log(name, symbol, balanceOf, balance, walletAddress)
+      
+              setPair(`${name} (${symbol}) -- ${tokenAddress.slice(0, 4) + "..." + tokenAddress.slice(-3)}`)
+              setToken(`${name}+${symbol}`)
+              setTokenBalance(Number(balance))
+            
+              setLoader(false)
+            } catch (error) {
+              console.log(error)
+              setLoader(false)
+            }
+          }
+          getToken()
         }
     }, [
       pairAddress,
-      setPairAddress
+      setPairAddress,
+      tokenAddress,
+      setTokenAddress
     ]);
 
     const handleClick = () => {
@@ -176,6 +195,16 @@ export const LockPairView: React.FC<Props> = memo<Props>(
                     options={networkTypeList}
                 />
             </div>
+            <DividerComponent value="LOCKER TYPE" />
+            <div className="tw-mb-6 tw-mt-10">
+              <LabelComponent value="Locker Type" />
+              <SelectComponent
+                value={lockType.toString()}
+                setValue={setLockType}
+                options={lockTypeList}
+              />
+            </div>
+            {lockType == 0 && <>
             <DividerComponent value="PAIR ADDRESS" />
             <div className="tw-mb-6 tw-mt-10 tw-flex tw-items-center tw-gap-5">
                 <div className="tw-w-full tw-flex-grow">
@@ -196,11 +225,54 @@ export const LockPairView: React.FC<Props> = memo<Props>(
                   />
                 </div>}
             </div>
+            </>}
+            {lockType == 1 && <>
+            <DividerComponent value="TOKEN ADDRESS" />
+            <div className="tw-mb-6 tw-mt-10 tw-flex tw-items-center tw-gap-5">
+                <div className="tw-w-full tw-flex-grow">
+                    <LabelComponent value="Token Address" required={true} />
+                    <TextFieldComponent
+                        value={tokenAddress}
+                        setValue={setTokenAddress}
+                        placeholder="Enter the token address you would like to lock liquidity for...."
+                        validator={validateAddress}
+                    />
+                </div>
+                {loader && tokenAddress.length > 0 && <div className="tw-w-full tw-flex-[20%] tw-pt-10">
+                  <Audio
+                    height={24}
+                    width={24}
+                    color="#06A95C"
+                    ariaLabel="loading"
+                  />
+                </div>}
+            </div>
+            </>}
             {pair.length > 0 && pairAddress.length > 0 && <>
               <DividerComponent value="PAIR INFORMATION" />
               <div className="tw-mb-6 tw-mt-10 tw-flex tw-gap-5 tw-items-center">
                 <div className="tw-w-full tw-flex-grow">
                   <LabelComponent value="Pair" required />
+                  <TextFieldComponent
+                    readonly
+                    value={pair}
+                    placeholder={pair}
+                  />
+                </div>
+                <div className="tw-w-full tw-flex-[20%] tw-pt-10">
+                <ButtonComponent 
+                  children={"Continue"}
+                  onClick={handleClick}
+                  className="tw-p-2"
+                />
+                </div>
+              </div>
+            </>}
+            {token.length > 0 && tokenAddress.length > 0 && <>
+              <DividerComponent value="TOKEN INFORMATION" />
+              <div className="tw-mb-6 tw-mt-10 tw-flex tw-gap-5 tw-items-center">
+                <div className="tw-w-full tw-flex-grow">
+                  <LabelComponent value="Token" required />
                   <TextFieldComponent
                     readonly
                     value={pair}

@@ -9,6 +9,7 @@ import TaxContractContainer from "@dex/modules/TaxContract/containers/TaxContrac
 import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
 
 import styles from "./page.module.scss";
+import NavBarComponent from "@dex/components/NavBar/NavBarComponent";
 
 export default function DashboardPage() {
   return (
@@ -25,6 +26,9 @@ export default function DashboardPage() {
             for free.<br></br>
             <span className="tw-font-bold">Partnership:</span>&nbsp; Make A Crypto Website For Free With <a href="https://t.me/WebsiteAIBot" className="tw-font-semi-bold">WebsiteAIBot</a>{" "}
           </span>
+        </div>
+        <div className="tw-w-full">
+          <NavBarComponent value="/" />
         </div>
         <div className={styles.mainRoot}>
           <div className="tw-w-full tw-flex-grow">

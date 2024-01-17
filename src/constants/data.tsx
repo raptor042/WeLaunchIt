@@ -8,8 +8,18 @@ export const networkTypeList: { [key: number]: string } = {
   1: "Ethereum Mainnet",
   // 5: "Ethereum Testnet Goerli",
   56: "BNB Smart Chain",
-  // 97: "BSC Testnet"
+  97: "BSC Testnet"
 };
+
+export const lockTypeList: { [key: number]: string } = {
+  0: "Lp Token Locker",
+  1: "Normal Token Locker"
+}
+
+export const EOUList: { [key: number]: string } = {
+  0: "Edit",
+  1: "Unlock"
+}
 
 export const routerTypeList: { [key: number]: string } = {
   1: "Uniswap V2",
@@ -45,14 +55,21 @@ export const SwapRouters: { [key: number]: any } = {
 export const ContractAddresses: { [key: number]: any } = {
   5: [
     "0x422c19D87369dcEc2d684fc5e1522431F89A96C4",
-    "0xf2dc4bea1dc9D220A1159a2b2A07bA9bE55A2CB1"
+    "0xf2dc4bea1dc9D220A1159a2b2A07bA9bE55A2CB1",
+    "",
+    ""
   ],
   97: [
     "0x2CeA7648636e0816732104f76b002492cCDd5cB8",
-    "0x6551BA54Ba118Db373D059f7d81b6fa9248ACB63"
+    "0x6551BA54Ba118Db373D059f7d81b6fa9248ACB63",
+    "",
+    "0x85Af96fCBb1BC348fB7cD760214d0599eFB969e5"
   ],
   1: [
-    "0x960DAC5533D9befd4eFdDe427c67714C2E20032f"
+    "0x960DAC5533D9befd4eFdDe427c67714C2E20032f",
+    "",
+    "",
+    ""
   ],
   56: [
     "0xCc89F132E9cdd6e88Fa435c69Ef5e805267Bf803",
@@ -123,4 +140,3 @@ export const antiBotOptionList = [
 
 export const minFeeLimit = 0;
 export const maxFeeLimit = 15;
-export const DEXTOOLS_API_KEY = "W3dNs10dyS12l5tz0ovrdADAOheJHN5f";

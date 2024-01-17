@@ -31,7 +31,8 @@ import {
   maxFeeLimit,
   tokenTypeList,
   ContractAddresses,
-  ChainIds
+  ChainIds,
+  lockTypeList
 } from "@dex/constants/data";
 import {
   buyFeeLimitExceed,
@@ -86,13 +87,19 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
       setLockFee,
       lockDescription,
       setLockDescription,
+      lockType,
+      setLockType,
+      tokenBalance,
+      token
     } = useContext(FormContext);
     const { web3, chainId } = useContext(Web3Context);
     const { addToast } = useToasts();
 
     useEffect(() => {
-      if(setLpTokenRatio) {
+      if(setLpTokenRatio && lockType == 0) {
         setLpTokenAmount((lpTokenBalance * lpTokenRatio) / 100)
+      } else if(setLpTokenRatio && lockType == 1) {
+        setLpTokenAmount((tokenBalance * lpTokenRatio) / 100)
       }
 
       const getLockFee = async () => {
@@ -109,7 +116,6 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
           setLockFee(lockfee)
         } catch (error) {
           console.log(error)
-          addToast("An error occured while trying to retrieve LP locker data.")
         }
       }
 
@@ -120,13 +126,13 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
     ]);
 
     const handleDate = () => {
-      const date0 = new Date().getTime()
-      const date1 = unlockDate.getTime()
-      const timeInMilliSecs = date1 - date0
-      const timeInDays = timeInMilliSecs / (1000*60*60*24)
-      console.log(date0, date1, timeInMilliSecs, timeInDays)
+      const date0 = Number(new Date().getTime()) / 1000
+      const date1 = Number(unlockDate.getTime()) / 1000
+      const timeInSecs = date1 - date0
+      const timeInDays = timeInSecs / (60*60*24)
+      console.log(date0, date1, timeInSecs, timeInDays)
 
-      if(timeInMilliSecs < 0) {
+      if(timeInSecs < 0) {
         return `${unlockDate.toDateString()}`
       } else {
         return `${unlockDate.toDateString()} - In ${timeInDays.toFixed(0)} days`
@@ -175,10 +181,14 @@ export const LockLiquidityView: React.FC<Props> = memo<Props>(
                   placeholder="Enter the amount of the Lp token you would like to lock...."
                 />
               </div>
-              <div className="tw-w-full tw-flex-[20%] tw-pt-10">
+              {lockType == 0 && <div className="tw-w-full tw-flex-[20%] tw-pt-10">
                 <span className="tw-text-[#3C3F4A] tw-text-xs">Balance: {lpTokenBalance}</span>
                 <h5 className="tw-text-[#06A95C] tw-text-lg tw-font-semi-bold">{lpToken.length == 0 ? "-" : lpToken.split("+")[1]}</h5>
-              </div>
+              </div>}
+              {lockType == 1 && <div className="tw-w-full tw-flex-[20%] tw-pt-10">
+                <span className="tw-text-[#3C3F4A] tw-text-xs">Balance: {tokenBalance}</span>
+                <h5 className="tw-text-[#06A95C] tw-text-lg tw-font-semi-bold">{token.length == 0 ? "-" : token.split("+")[1]}</h5>
+              </div>}
             </div>
             <div className="tw-mt-5 tw-mb-6 tw-flex tw-gap-5 tw-items-center">
               <div className="tw-w-full tw-flex-grow">

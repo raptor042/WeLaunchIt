@@ -1,0 +1,19 @@
+.LocksRoot {
+  @apply md:tw-sticky
+    tw-top-[30px]
+    md:tw-mt-0
+    tw-mt-10
+    tw-w-full
+    tw-w-full
+    tw-block;
+}
+
+.LocksContainer {
+  @apply tw-bg-white
+    tw-border
+    tw-rounded-2xl
+    tw-border-grey
+    tw-shadow-lg
+    tw-text-greyD
+    tw-text-sm;
+}

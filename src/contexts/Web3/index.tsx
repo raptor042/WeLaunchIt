@@ -13,6 +13,10 @@ import { rpcUrls, ChainIds, ChainsInfo } from "@dex/constants/data";
 // import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import { useToasts } from "react-toast-notifications";
+import pairABI from "@dex/Pair.json"
+import pairERC20ABI from "@dex/Pair(ERC20).json"
+import { FormContext } from "../Form";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const providerOptions = {
   // coinbasewallet: {
@@ -47,6 +51,19 @@ export interface IWeb3Context {
   isConnected: boolean;
   chainId: number;
   switchNetwork: Function;
+  setUserLockedPair: Function;
+}
+
+export interface Lock {
+  id: number;
+  token: string;
+  owner: string;
+  amount: string;
+  lockDate: number;
+  tgeDate: number;
+  unlockedAmount: number;
+  description: string;
+  cycle: number;
 }
 
 export const Web3Context = createContext<IWeb3Context>({
@@ -57,6 +74,7 @@ export const Web3Context = createContext<IWeb3Context>({
   isConnected: false,
   chainId: 1,
   switchNetwork: () => {},
+  setUserLockedPair: () => {},
 });
 
 type Web3ProviderPropType = {
@@ -98,6 +116,9 @@ export const Web3Provider = (props: Web3ProviderPropType) => {
   const [isConnected, toggleConnection] = useState<boolean>(false);
   const [web3Modal, setWeb3Modal] = useState<Web3Modal>();
   const { addToast, removeToast } = useToasts();
+  const {
+    setPair,
+  } = useContext(FormContext);
 
   useEffect(() => {
     setWeb3Modal(
@@ -133,6 +154,10 @@ export const Web3Provider = (props: Web3ProviderPropType) => {
         }
       }
     }
+  }, []);
+
+  const setUserLockedPair = useCallback(async (pairAddress: string, id: number, amount: number, ops: string) => {
+    
   }, []);
 
   const subscribeProvider = useCallback(
@@ -240,6 +265,7 @@ export const Web3Provider = (props: Web3ProviderPropType) => {
         isConnected,
         chainId,
         switchNetwork,
+        setUserLockedPair
       }}
     >
       {props.children}

@@ -98,8 +98,17 @@ export interface IFormContext {
   tokenType: number;
   setTokenType: Function;
 
+  tokenAddress: string;
+  setTokenAddress: Function;
+
   pairAddress: string;
   setPairAddress: Function;
+
+  token: string;
+  setToken: Function;
+
+  tokenBalance: number;
+  setTokenBalance: Function;
 
   pair: string;
   setPair: Function;
@@ -130,6 +139,21 @@ export interface IFormContext {
 
   lockDescription: string;
   setLockDescription: Function;
+
+  lockId: number;
+  setLockId: Function;
+
+  newLockAmount: number;
+  setNewLockAmount: Function;
+
+  newUnlockDate: Date;
+  setNewUnlockDate: Function;
+
+  lockType: number;
+  setLockType: Function;
+
+  EOU: number;
+  setEOU: Function;
 }
 
 export const FormContext = createContext<IFormContext>({
@@ -197,10 +221,16 @@ export const FormContext = createContext<IFormContext>({
   setNetworkType: () => {},
   tokenType: 1,
   setTokenType: () => {},
+  tokenAddress: "",
+  setTokenAddress: () => {},
+  tokenBalance: 0,
+  setTokenBalance: () => {},
   pairAddress: "",
   setPairAddress: () => {},
   pair: "",
   setPair: () => {},
+  token: "",
+  setToken: () => {},
   lpToken: "",
   setLpToken: () => {},
   lpTokenAddress: "",
@@ -219,6 +249,16 @@ export const FormContext = createContext<IFormContext>({
   setLockFee: () => {},
   lockDescription: "",
   setLockDescription: () => {},
+  lockId: 0,
+  setLockId: () => {},
+  newLockAmount: 0,
+  setNewLockAmount: () => {},
+  newUnlockDate: new Date(),
+  setNewUnlockDate: () => {},
+  lockType: 0,
+  setLockType: () => {},
+  EOU: 0,
+  setEOU: () => {},
 });
 
 type FormProviderPropType = {
@@ -273,6 +313,10 @@ export const FormProvider = (props: FormProviderPropType) => {
 
   const [tokenType, setTokenType] = useState(1)
 
+  const [tokenAddress, setTokenAddress] = useState("")
+  const [token, setToken] = useState("")
+  const [tokenBalance, setTokenBalance] = useState(0)
+
   const [pairAddress, setPairAddress] = useState("")
   const [pair, setPair] = useState("")
 
@@ -288,6 +332,13 @@ export const FormProvider = (props: FormProviderPropType) => {
   const [lockFee, setLockFee] = useState(0)
 
   const [lockDescription, setLockDescription] = useState("")
+
+  const [lockId, setLockId] = useState(0)
+  const [newLockAmount, setNewLockAmount] = useState(0)
+  const [newUnlockDate, setNewUnlockDate] = useState(new Date())
+
+  const [lockType, setLockType] = useState(0)
+  const [EOU, setEOU] = useState(0)
 
   useEffect(() => {
     setNetworkType(chainId);
@@ -364,6 +415,12 @@ export const FormProvider = (props: FormProviderPropType) => {
         setMaxWalletAmount,
         routerType,
         setRouterType,
+        tokenAddress,
+        setTokenAddress,
+        token,
+        setToken,
+        tokenBalance,
+        setTokenBalance,
         pairAddress,
         setPairAddress,
         pair,
@@ -386,6 +443,16 @@ export const FormProvider = (props: FormProviderPropType) => {
         setLockFee,
         lockDescription,
         setLockDescription,
+        lockId,
+        setLockId,
+        newLockAmount,
+        setNewLockAmount,
+        newUnlockDate,
+        setNewUnlockDate,
+        lockType,
+        setLockType,
+        EOU,
+        setEOU,
       }}
     >
       {props.children}

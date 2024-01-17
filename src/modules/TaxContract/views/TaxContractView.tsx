@@ -191,6 +191,7 @@ const TaxContractView = () => {
         addToast(totalFeeLimitExceed, { appearance: "warning" });
       } else {
         if (!web3) return;
+        toggleDeploying(true);
         const contract = new web3.eth.Contract(
           tokenIIABI as any[],
           ContractAddresses[chainId][1]
@@ -292,6 +293,7 @@ const TaxContractView = () => {
         addToast(totalFeeLimitExceed, { appearance: "warning" });
       } else {
         if (!web3) return;
+        toggleDeploying(true);
         const contract = new web3.eth.Contract(
           tokenIIIABI as any[],
           ContractAddresses[chainId][2]

@@ -1,11 +1,14 @@
-import LockPairContainer from "@dex/modules/LockPair/containers/LockPairContainer";
-import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
 import LocksContainer from "@dex/modules/Locks/containers/LocksContainer";
+import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
 
 import styles from "../page.module.scss";
+import { useRouter } from "next/router";
 import NavBarComponent from "@dex/components/NavBar/NavBarComponent";
 
 export default function LockPage() {
+    const router = useRouter()
+    const { address } = router.query
+
     return (
         <>
             <div className={styles.root}>
@@ -22,15 +25,14 @@ export default function LockPage() {
                 </span>
                 </div>
                 <div className="tw-w-full">
-                    <NavBarComponent value="/pair" />
+                    <NavBarComponent value="/locks" />
                 </div>
                 <div className={styles.mainRoot}>
-                <div className="tw-w-full tw-flex-grow">
-                    <LockPairContainer />
-                </div>
-                <div className="md:tw-w-full md:tw-flex-[60%]">
-                    <LocksContainer />
-                </div>
+                    <div className="md:tw-w-full md:tw-flex-[20%]"></div>
+                    <div className="tw-w-full tw-flex-grow">
+                        <LocksContainer />
+                    </div>
+                    <div className="md:tw-w-full md:tw-flex-[20%]"></div>
                 {/* <div className={styles.telegram}>
                     <a href="https://t.me/welaunchit" target="blank">
                     {telegramMark}
