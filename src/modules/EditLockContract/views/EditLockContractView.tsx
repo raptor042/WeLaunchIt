@@ -23,7 +23,7 @@ import {
   routerTypeList
 } from "@dex/constants/data";
 
-const EditContractView = () => {
+const EditLockContractView = () => {
   const { addToast } = useToasts();
   const {
     lockId,
@@ -300,4 +300,4 @@ const EditContractView = () => {
   );
 };
 
-export default EditContractView;
+export default EditLockContractView;

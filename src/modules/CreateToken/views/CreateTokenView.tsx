@@ -173,7 +173,7 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
           />
         </div>
         <div className="tw-p-7">
-        <div className="tw-mb-6">
+          <div className="tw-mb-6">
             <LabelComponent value="Contract" />
             <SelectComponent
               value={tokenType.toString()}
@@ -215,6 +215,7 @@ export const CreateTokenView: React.FC<Props> = memo<Props>(
                 setValue={setTotalSupply}
                 number
                 step={1}
+                max={Infinity}
                 placeholder="Token Supply (1000)"
               />
             </div>

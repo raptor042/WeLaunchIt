@@ -1,11 +1,11 @@
-import EditLockContainer from "@dex/modules/EditLock/containers/EditLockContainer";
-import EditContractContainer from "@dex/modules/EditContract/containers/EditContractContainer";
+import EditTokenContainer from "@dex/modules/EditToken/containers/EditTokenContainer";
+import EditTokenContractContainer from "@dex/modules/EditTokenContract/containers/EditTokenContractContainer";
 import FooterContainer from "@dex/modules/Footer/FooterContainer/FooterContainer";
 
 import styles from "../page.module.scss";
 import NavBarComponent from "@dex/components/NavBar/NavBarComponent";
 
-export default function EditLockPage() {
+export default function EditTokenPage() {
     return (
         <>
             <div className={styles.root}>
@@ -22,14 +22,14 @@ export default function EditLockPage() {
                 </span>
                 </div>
                 <div className="tw-w-full">
-                    <NavBarComponent value="/edit" />
+                    <NavBarComponent value="/edit_contract" />
                 </div>
                 <div className={styles.mainRoot}>
                 <div className="tw-w-full tw-flex-grow">
-                    <EditLockContainer />
+                    <EditTokenContainer />
                 </div>
                 <div className="md:tw-w-full md:tw-flex-[60%]">
-                    <EditContractContainer />
+                    <EditTokenContractContainer />
                 </div>
                 {/* <div className={styles.telegram}>
                     <a href="https://t.me/welaunchit" target="blank">

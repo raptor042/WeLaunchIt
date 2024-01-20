@@ -138,5 +138,11 @@ export const antiBotOptionList = [
   }
 ];
 
+export const actionList: { [key: number]: any } = {
+  1: ["Add Liquidity", "Update Taxes", "Renounce Ownership", "Update Max Wallet", "Update Max Tx"],
+  2: ["Add Liquidity", "Update Fees", "Transfer Ownership", "Update Max Wallet", "Update Max Tx"],
+  3: ["Add Liquidity", "Update Fees", "Renounce Ownership", "Update Max Sell Amount", "Update Max Tx"]
+}
+
 export const minFeeLimit = 0;
 export const maxFeeLimit = 15;

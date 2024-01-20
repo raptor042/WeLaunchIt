@@ -154,6 +154,15 @@ export interface IFormContext {
 
   EOU: number;
   setEOU: Function;
+
+  action: string;
+  setAction: Function;
+
+  tokenAmount: number;
+  setTokenAmount: Function;
+
+  ETHAmount: number;
+  setETHAmount: Function;
 }
 
 export const FormContext = createContext<IFormContext>({
@@ -259,6 +268,12 @@ export const FormContext = createContext<IFormContext>({
   setLockType: () => {},
   EOU: 0,
   setEOU: () => {},
+  action: "--",
+  setAction: () => {},
+  tokenAmount: 0,
+  setTokenAmount: () => {},
+  ETHAmount: 0,
+  setETHAmount: () => {},
 });
 
 type FormProviderPropType = {
@@ -339,6 +354,10 @@ export const FormProvider = (props: FormProviderPropType) => {
 
   const [lockType, setLockType] = useState(0)
   const [EOU, setEOU] = useState(0)
+  const [action, setAction] = useState("--")
+
+  const [tokenAmount, setTokenAmount] = useState(0)
+  const [ETHAmount, setETHAmount] = useState(0)
 
   useEffect(() => {
     setNetworkType(chainId);
@@ -453,6 +472,12 @@ export const FormProvider = (props: FormProviderPropType) => {
         setLockType,
         EOU,
         setEOU,
+        action,
+        setAction,
+        tokenAmount,
+        setTokenAmount,
+        ETHAmount,
+        setETHAmount,
       }}
     >
       {props.children}
