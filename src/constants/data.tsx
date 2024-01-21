@@ -8,7 +8,7 @@ export const networkTypeList: { [key: number]: string } = {
   1: "Ethereum Mainnet",
   // 5: "Ethereum Testnet Goerli",
   56: "BNB Smart Chain",
-  // 97: "BSC Testnet"
+  97: "BSC Testnet"
 };
 
 export const lockTypeList: { [key: number]: string } = {
@@ -59,12 +59,12 @@ export const ContractAddresses: { [key: number]: any } = {
   //   "",
   //   ""
   // ],
-  // 97: [
-  //   "0x2CeA7648636e0816732104f76b002492cCDd5cB8",
-  //   "0x6551BA54Ba118Db373D059f7d81b6fa9248ACB63",
-  //   "",
-  //   "0x85Af96fCBb1BC348fB7cD760214d0599eFB969e5"
-  // ],
+  97: [
+    "0x2CeA7648636e0816732104f76b002492cCDd5cB8",
+    "0x8ACA251A8b863e02fC2c41832E6951E2f8393E41",
+    "0x33A0B90b58D2982B0864dDB235757475d8491B84",
+    "0x85Af96fCBb1BC348fB7cD760214d0599eFB969e5"
+  ],
   1: [
     "0x960DAC5533D9befd4eFdDe427c67714C2E20032f",
     "",
@@ -139,9 +139,27 @@ export const antiBotOptionList = [
 ];
 
 export const actionList: { [key: number]: any } = {
-  1: ["Add Liquidity", "Update Taxes", "Renounce Ownership", "Update Max Wallet", "Update Max Tx"],
-  2: ["Add Liquidity", "Update Fees", "Transfer Ownership", "Update Max Wallet", "Update Max Tx"],
-  3: ["Add Liquidity", "Update Fees", "Renounce Ownership", "Update Max Sell Amount", "Update Max Tx"]
+  1: {
+    1: "Add Liquidity", 
+    2: "Update Taxes", 
+    3: "Renounce Ownership", 
+    4: "Update Max Wallet", 
+    5: "Update Max Tx"
+  },
+  2: {
+    1: "Add Liquidity", 
+    2: "Update Taxes", 
+    3: "Renounce Ownership", 
+    4: "Update Max Wallet", 
+    5: "Update Max Tx"
+  },
+  3: {
+    1: "Add Liquidity", 
+    2: "Update Taxes", 
+    3: "Renounce Ownership", 
+    4: "Update Max Sell Amount", 
+    5: "Update Max Tx"
+  },
 }
 
 export const minFeeLimit = 0;

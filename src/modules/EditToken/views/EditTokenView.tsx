@@ -165,7 +165,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
         setSellFee(sellFee);
       } else if (tokenType == 2) {
         const totalFee = Number(
-          (marketingFee + devFee + lpFee + reflectionFee).toFixed(6)
+          (marketingFee + lpFee + reflectionFee).toFixed(6)
         );
         if (totalFee > 30) setTotalFeeWarn(totalFeeLimitExceed);
       } else if (tokenType == 3) {
@@ -243,7 +243,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
           <div className="tw-mb-6 tw-mt-10">
             <LabelComponent value="Actions" />
             <SelectComponent
-              value={action}
+              value={action.toString()}
               setValue={setAction}
               options={actionList[tokenType]}
             />
@@ -257,7 +257,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
               placeholder="Enter a token address...."
             />
           </div>
-          {Number(action) == 0 && <>
+          {Number(action) == 1 && <>
             <DividerComponent value="ADD LIQUIDITY" />
             <div className="tw-mb-6 tw-mt-10">
               <LabelComponent value="Token Amount" required />
@@ -276,7 +276,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
               />
             </div>
           </>}
-          {tokenType == 1 && Number(action) == 1 && <>
+          {tokenType == 1 && Number(action) == 2 && <>
             <DividerComponent value="UPDATE TAX CONFIGS" />
             <div className="tw-mt-10 tw-flex tw-gap-2 tw-mb-2">
               <div className="tw-w-full">
@@ -394,7 +394,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
               </div>
             </div>
             </>}
-            {tokenType == 2 && Number(action) == 1 && <>
+            {tokenType == 2 && Number(action) == 2 && <>
               <DividerComponent value="UPDATE FEE CONFIGS" />
               <div className="tw-mt-10 tw-flex tw-gap-2 tw-mb-2">
                 <div className="tw-w-full">
@@ -409,7 +409,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                     placeholder="0 - 15%"
                   />
                 </div>
-                <div className="tw-w-full">
+                {/* <div className="tw-w-full">
                   <LabelComponent value="Dev Fee" required />
                   <TextFieldComponent
                     number
@@ -420,7 +420,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                     max={maxFeeLimit}
                     placeholder="0 - 15%"
                   />
-                </div>
+                </div> */}
                 <div className="tw-w-full">
                   <LabelComponent value="Lp Fee" required />
                   <TextFieldComponent
@@ -460,13 +460,13 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                     readonly
                     warned={totalFeeWarn.length > 0}
                     message={totalFeeWarn}
-                    value={marketingFee + devFee + lpFee + reflectionFee}
+                    value={marketingFee + lpFee + reflectionFee}
                     placeholder="0 - 30%"
                   />
                 </div>
               </div>
             </>}
-            {tokenType == 3 && Number(action) == 1 && <>
+            {tokenType == 3 && Number(action) == 2 && <>
               <DividerComponent value="UPDATE FEE CONFIGS" />
               <div className="tw-mt-10 tw-flex tw-gap-2 tw-mb-2">
                 <div className="tw-w-full">
@@ -514,7 +514,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                 </div>
               </div>
             </>}
-            {tokenType == 2 && Number(action) == 2 && <>
+            {tokenType == 2 && Number(action) == 3 && <>
               <DividerComponent value="TRANSFER OWNERSHIP" />
               <div className="tw-mb-6 tw-mt-10">
                 <LabelComponent value="New Owner Address" required />
@@ -525,7 +525,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                 />
               </div>
             </>}
-            {tokenType != 3 && Number(action) == 3 && <>
+            {tokenType != 3 && Number(action) == 4 && <>
               <DividerComponent value="TOKEN CONFIGS" />
               <div className="tw-mt-10 tw-mb-6">
                 <LabelComponent value="Max Wallet Amount" required={true} />
@@ -539,7 +539,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                 />
               </div>
             </>}
-            {tokenType == 3 && Number(action) == 3 && <>
+            {tokenType == 3 && Number(action) == 4 && <>
               <DividerComponent value="TOKEN CONFIGS" />
               <div className="tw-mt-10 tw-mb-6">
                 <LabelComponent value="Max Sell Amount" required={true} />
@@ -553,7 +553,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
                 />
               </div>
             </>}
-            {Number(action) == 4 && <>
+            {Number(action) == 5 && <>
               <DividerComponent value="TOKEN CONFIGS" />
               <div className="tw-mt-10 tw-mb-6">
                 <LabelComponent value="Max Transaction Amount" required={true} />

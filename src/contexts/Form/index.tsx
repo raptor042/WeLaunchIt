@@ -155,7 +155,7 @@ export interface IFormContext {
   EOU: number;
   setEOU: Function;
 
-  action: string;
+  action: number;
   setAction: Function;
 
   tokenAmount: number;
@@ -268,7 +268,7 @@ export const FormContext = createContext<IFormContext>({
   setLockType: () => {},
   EOU: 0,
   setEOU: () => {},
-  action: "--",
+  action: 1,
   setAction: () => {},
   tokenAmount: 0,
   setTokenAmount: () => {},
@@ -354,7 +354,7 @@ export const FormProvider = (props: FormProviderPropType) => {
 
   const [lockType, setLockType] = useState(0)
   const [EOU, setEOU] = useState(0)
-  const [action, setAction] = useState("--")
+  const [action, setAction] = useState(1)
 
   const [tokenAmount, setTokenAmount] = useState(0)
   const [ETHAmount, setETHAmount] = useState(0)

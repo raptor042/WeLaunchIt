@@ -13,9 +13,11 @@ import {
 import { ChainsInfo, tokenTypeList } from "@dex/constants/data";
 
 import { totalFeeLimitExceed } from "@dex/constants/message";
-import tokenIABI from "@dex/TokenFactoryI.json";
-import tokenIIABI from "@dex/TokenFactoryII.json";
-import tokenIIIABI from "@dex/TokenFactoryIII.json";
+import tokenIABI from "@dex/TokenI.json";
+import tokenIIABI from "@dex/TokenII.json";
+import tokenIIIABI from "@dex/TokenIII.json";
+import routerABI from "@dex/Router.json";
+import pairERC20ABI from "@dex/Pair(ERC20).json"
 import { Web3Context } from "@dex/contexts/Web3";
 
 import {
@@ -70,33 +72,29 @@ const EditTokenContractView = () => {
   const handleClick = useCallback(async () => {
     if (!isConnected) return;
 
-    if (tokenType == 1) {
-      if (tokenName.length === 0) {
-        addToast("Token Name is required!", { appearance: "warning" });
-      } else if (symbol.length === 0) {
-        addToast("Symbol is required!", { appearance: "warning" });
-      } else if (totalSupply === 0) {
-        addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (marketingWallet.length === 0) {
-        addToast("Marketing Wallet Address is required!", {
-          appearance: "warning"
-        });
-      } else if (!validateAddress(marketingWallet)) {
-        addToast("Marketing Wallet Address is invalid!", {
-          appearance: "warning"
-        });
-      } else if (devWallet.length === 0) {
-        addToast("Dev Wallet Address is required!", { appearance: "warning" });
-      } else if (!validateAddress(devWallet)) {
-        addToast("Dev Wallet Address is invalid!", { appearance: "warning" });
-      } else if (buyFee + sellFee > 30) {
-        addToast(totalFeeLimitExceed, { appearance: "warning" });
+    if(action == 1) {
+      console.log(tokenAddress.length)
+      if (tokenAddress.length === 0) {
+        addToast("Token Address is required!", { appearance: "warning" });
+      } else if (!validateAddress(tokenAddress)) {
+        addToast("Token Address is invalid!", { appearance: "warning" });
+      } else if (tokenAmount === 0) {
+        addToast("Token Amount is required!", { appearance: "warning" });
+      } else if (ETHAmount === 0 && chainId == 1) {
+        addToast("ETH Amount is required!", { appearance: "warning" });
+      } else if (ETHAmount === 0 && chainId == 56) {
+        addToast("BNB Amount is required!", { appearance: "warning" });
       } else {
         toggleEditing(true);
         if (!web3) return;
         const contract = new web3.eth.Contract(
-          tokenIABI as any[],
-          ContractAddresses[chainId][0]
+          routerABI.abi as any[],
+          SwapRouters[chainId]
+        );
+
+        const _contract = new web3.eth.Contract(
+          pairERC20ABI.abi as any[],
+          tokenAddress
         );
 
         const zeros = "000000000000000000";
@@ -109,24 +107,11 @@ const EditTokenContractView = () => {
         };
 
         try {
-          await contract.methods
-            .deployToken({
-              name: tokenName,
-              symbol,
-              marketingFeeReceiver: marketingWallet,
-              devFeeReceiver: devWallet,
-              marketingTaxBuy: numberToBN(buyMarketingFee),
-              marketingTaxSell: numberToBN(sellMarketingFee),
-              devTaxSell: numberToBN(sellDevFee),
-              devTaxBuy: numberToBN(buyDevFee),
-              lpTaxBuy: numberToBN(buyLpFee),
-              lpTaxSell: numberToBN(sellLpFee),
-              totalSupply: numberToBN(totalSupply),
-              maxPercentageForWallet: numberToBN(maxWalletAmount),
-              maxPercentageForTx: numberToBN(maxTransAmount),
-              swapRouter: SwapRouters[chainId], //routerType,
-              newOwner: account
-            })
+          await _contract.methods
+            .approve(
+              SwapRouters[chainId],
+              numberToBN(tokenAmount)
+            )
             .send({
               from: account
             })
@@ -145,20 +130,54 @@ const EditTokenContractView = () => {
               )
             )
             .on("confirmation", (confirmationNumber: number, recepit: any) => {
-              const deployedAddress = recepit.events.TokenDeployed.returnValues
-                .tokenAddress as string;
               if (confirmationNumber === 1) {
                 addToast(
                   <p className="tw-m-4">
-                    Deployed:
-                    <a
-                      target="_blank"
-                      href={`${ChainsInfo[chainId].blockExplorerUrls}address/${deployedAddress}`}
-                    >
-                      {`${deployedAddress.slice(0, 10)}...${deployedAddress.slice(
-                        -8
-                      )}`}
-                    </a>
+                    Approved!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to approve", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+          await contract.methods
+            .addLiquidityETH(
+              tokenAddress,
+              numberToBN(tokenAmount),
+              numberToBN(0),
+              numberToBN(0),
+              account,
+              Number((await web3.eth.getBlock("latest")).timestamp) + 10000
+            )
+            .send({
+              from: account,
+              value: numberToBN(ETHAmount)
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Liquidity added!!!!
                   </p>,
                   { appearance: "success", autoDismissTimeout: 10000 }
                 );
@@ -166,14 +185,14 @@ const EditTokenContractView = () => {
               }
             })
             .on("error", (error: any) => {
-              addToast("Failed to deploy", {
+              addToast("Failed to add liquidity", {
                 appearance: "error",
                 autoDismissTimeout: 10000
               });
               toggleEditing(false);
             });
         } catch (error) {
-          addToast("Failed to deploy", {
+          addToast("Failed to add liquidity", {
             appearance: "error",
             autoDismissTimeout: 10000
           });
@@ -182,52 +201,277 @@ const EditTokenContractView = () => {
         }
         return;
       }
-    } else if (tokenType == 2) {
-      if (tokenName.length === 0) {
-        addToast("Token Name is required!", { appearance: "warning" });
-      } else if (symbol.length === 0) {
-        addToast("Symbol is required!", { appearance: "warning" });
-      } else if (totalSupply === 0) {
-        addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (devWallet.length === 0) {
-        addToast("Dev Wallet Address is required!", { appearance: "warning" });
-      } else if (!validateAddress(devWallet)) {
-        addToast("Dev Wallet Address is invalid!", { appearance: "warning" });
-      } else if (marketingFee + devFee + lpFee + reflectionFee > 30) {
+    }
+
+    if(tokenType == 1 && action == 2) {
+      if (buyFee + sellFee > 30) {
         addToast(totalFeeLimitExceed, { appearance: "warning" });
       } else {
-        if (!web3) return;
         toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIABI as any[],
+          tokenAddress
+        );
+        
+        try {
+          await contract.methods
+            .updateMarketingBuyTax(
+              buyMarketingFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Marketing Buy Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update marketing buy tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+            await contract.methods
+            .updateMarketingSellTax(
+              sellMarketingFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Marketing Sell Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update marketing sell tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+            await contract.methods
+            .updateDevBuyTax(
+              buyDevFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Dev Buy Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update dev buy tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+            await contract.methods
+            .updateDevSellTax(
+              sellDevFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Dev Sell Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update dev sell tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+            await contract.methods
+            .updateLpBuyTax(
+              buyLpFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated LP Buy Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update LP buy tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+
+            await contract.methods
+            .updateLpSellTax(
+              sellLpFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated LP Sell Tax!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update LP sell tax", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+            });
+        } catch (error) {
+          addToast("Failed to update taxes", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+        return;
+      }
+    }
+
+    if(tokenType == 2 && action == 2) {
+      if (marketingFee + lpFee + reflectionFee > 30) {
+        addToast(totalFeeLimitExceed, { appearance: "warning" });
+      } else {
+        toggleEditing(true);
+        if (!web3) return;
         const contract = new web3.eth.Contract(
           tokenIIABI as any[],
-          ContractAddresses[chainId][1]
+          tokenAddress
         );
-
-        const zeros = "000000000000000000";
-        const numberToBN = (_value: number) => {
-          let dotPosition = _value.toString().indexOf(".");
-          const value =
-            dotPosition === -1 ? _value.toString() + "." + zeros : _value + zeros;
-          if (dotPosition === -1) dotPosition = _value.toString().length;
-          return value.slice(0, dotPosition + 19).replace(/\D/g, "");
-        };
 
         try {
           await contract.methods
-            .createToken(
-              tokenName,
-              symbol,
-              18,
-              numberToBN(totalSupply),
-              devWallet,
-              [
-                numberToBN(lpFee),
-                numberToBN(reflectionFee),
-                numberToBN(marketingFee),
-                numberToBN(devFee)
-              ],
-              rewardToken,
-              SwapRouters[chainId]
+            .setFees(
+              lpFee,
+              reflectionFee,
+              marketingFee,
+              100
             )
             .send({
               from: account
@@ -247,20 +491,10 @@ const EditTokenContractView = () => {
               )
             )
             .on("confirmation", (confirmationNumber: number, recepit: any) => {
-              const deployedAddress = recepit.events.CreateToken.returnValues
-                .tokenAddress as string;
               if (confirmationNumber === 1) {
                 addToast(
                   <p className="tw-m-4">
-                    Deployed:
-                    <a
-                      target="_blank"
-                      href={`${ChainsInfo[chainId].blockExplorerUrls}address/${deployedAddress}`}
-                    >
-                      {`${deployedAddress.slice(0, 10)}...${deployedAddress.slice(
-                        -8
-                      )}`}
-                    </a>
+                    Updated Fees!!!!
                   </p>,
                   { appearance: "success", autoDismissTimeout: 10000 }
                 );
@@ -268,14 +502,14 @@ const EditTokenContractView = () => {
               }
             })
             .on("error", (error: any) => {
-              addToast("Failed to deploy", {
+              addToast("Failed to update fees", {
                 appearance: "error",
                 autoDismissTimeout: 10000
               });
               toggleEditing(false);
             });
         } catch (error) {
-          addToast("Failed to deploy", {
+          addToast("Failed to update fees", {
             appearance: "error",
             autoDismissTimeout: 10000
           });
@@ -283,49 +517,24 @@ const EditTokenContractView = () => {
           toggleEditing(false);
         }
         return;
-      } 
-    } else if (tokenType == 3) {
-      if (tokenName.length === 0) {
-        addToast("Token Name is required!", { appearance: "warning" });
-      } else if (symbol.length === 0) {
-        addToast("Symbol is required!", { appearance: "warning" });
-      } else if (totalSupply === 0) {
-        addToast("Total Supply is required!", { appearance: "warning" });
-      } else if (ownerWallet.length === 0) {
-        addToast("Owner Wallet Address is required!", { appearance: "warning" });
-      } else if (!validateAddress(ownerWallet)) {
-        addToast("Owner Wallet Address is invalid!", { appearance: "warning" });
-      } else if (liquidityFee + taxFee > 30) {
+      }
+    }
+
+    if(tokenType == 3 && action == 2) {
+      if (taxFee + liquidityFee > 30) {
         addToast(totalFeeLimitExceed, { appearance: "warning" });
       } else {
-        if (!web3) return;
         toggleEditing(true);
+        if (!web3) return;
         const contract = new web3.eth.Contract(
           tokenIIIABI as any[],
-          ContractAddresses[chainId][2]
+          tokenAddress
         );
-
-        const zeros = "000000000000000000";
-        const numberToBN = (_value: number) => {
-          let dotPosition = _value.toString().indexOf(".");
-          const value =
-            dotPosition === -1 ? _value.toString() + "." + zeros : _value + zeros;
-          if (dotPosition === -1) dotPosition = _value.toString().length;
-          return value.slice(0, dotPosition + 19).replace(/\D/g, "");
-        };
 
         try {
           await contract.methods
-            .createToken(
-              tokenName,
-              symbol,
-              numberToBN(totalSupply),
-              numberToBN(taxFee),
-              numberToBN(liquidityFee),
-              numberToBN(maxTxAmount),
-              numberToBN(sellMaxAmount),
-              SwapRouters[chainId],
-              ownerWallet
+            .setTaxFeePercent(
+              taxFee
             )
             .send({
               from: account
@@ -345,35 +554,62 @@ const EditTokenContractView = () => {
               )
             )
             .on("confirmation", (confirmationNumber: number, recepit: any) => {
-              const deployedAddress = recepit.events.CreateToken.returnValues
-                .tokenAddress as string;
               if (confirmationNumber === 1) {
                 addToast(
                   <p className="tw-m-4">
-                    Deployed:
-                    <a
-                      target="_blank"
-                      href={`${ChainsInfo[chainId].blockExplorerUrls}address/${deployedAddress}`}
-                    >
-                      {`${deployedAddress.slice(0, 10)}...${deployedAddress.slice(
-                        -8
-                      )}`}
-                    </a>
+                    Updated Tax Fees!!!!
                   </p>,
                   { appearance: "success", autoDismissTimeout: 10000 }
                 );
-                toggleEditing(false);
               }
             })
             .on("error", (error: any) => {
-              addToast("Failed to deploy", {
+              addToast("Failed to update tax fees", {
                 appearance: "error",
                 autoDismissTimeout: 10000
               });
-              toggleEditing(false);
+            });
+
+            await contract.methods
+            .setLiquidityFeePercent(
+              liquidityFee
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Liquidity Fees!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+              }
+              toggleEditing(false)
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to update liquidity fees", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
             });
         } catch (error) {
-          addToast("Failed to deploy", {
+          addToast("Failed to update fees", {
             appearance: "error",
             autoDismissTimeout: 10000
           });
@@ -381,8 +617,527 @@ const EditTokenContractView = () => {
           toggleEditing(false);
         }
         return;
-      } 
+      }
     }
+
+    if(tokenType == 1 && action == 3) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .renounceOwnership()
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Renounced Ownership!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to renounce ownership", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to renounce ownership", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 2 && action == 3) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .transferOwnership(
+              ownerAddress
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    {`Successfully transfered ownership to ${ownerAddress.slice(0, 4) + "..." + ownerAddress.slice(-3)}!!!!`}
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to transfer ownership", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to transfer ownership", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 3 && action == 3) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .renounceOwnership()
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Renounced Ownership!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to renounce ownership", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to renounce ownership", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 1 && action == 4) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .updateMaxWalletAmount(
+              maxWalletAmount
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Max Wallet Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to max wallet amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to max wallet amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 3 && action == 4) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .setNumTokensSellToAddToLiquidity(
+              sellMaxAmount
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Sell Max Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to sell max amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to sell max amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 2 && action == 4) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .setMaxWalletPercent_base1000(
+              maxWalletAmount * 1000
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Max Wallet Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to max wallet amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to max wallet amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 1 && action == 5) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .updateMaxTransactionAmount(
+              maxTxAmount
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Max Tx Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to max tx amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to max tx amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 2 && action == 5) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .setMaxTxPercent_base1000(
+              maxTxAmount * 1000
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Max Tx Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to max tx amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to max tx amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
+    if(tokenType == 3 && action == 5) {
+      toggleEditing(true);
+        if (!web3) return;
+        const contract = new web3.eth.Contract(
+          tokenIIIABI as any[],
+          tokenAddress
+        );
+
+        try {
+            await contract.methods
+            .setMaxTxPercent(
+              maxTransAmount
+            )
+            .send({
+              from: account
+            })
+            .on("transactionHash", (hash: string) =>
+              addToast(
+                <p className="tw-m-4">
+                  Transaction:
+                  <a
+                    target="_blank"
+                    href={`${ChainsInfo[chainId].blockExplorerUrls}tx/${hash}`}
+                  >
+                    {`${hash.slice(0, 10)}...${hash.slice(-8)}`}
+                  </a>
+                </p>,
+                { appearance: "info", autoDismissTimeout: 10000 }
+              )
+            )
+            .on("confirmation", (confirmationNumber: number, recepit: any) => {
+              if (confirmationNumber === 1) {
+                addToast(
+                  <p className="tw-m-4">
+                    Updated Max Tx Amount!!!!
+                  </p>,
+                  { appearance: "success", autoDismissTimeout: 10000 }
+                );
+                toggleEditing(false);
+              }
+            })
+            .on("error", (error: any) => {
+              addToast("Failed to max tx amount", {
+                appearance: "error",
+                autoDismissTimeout: 10000
+              });
+              toggleEditing(false);
+            });
+        } catch (error) {
+          addToast("Failed to max tx amount", {
+            appearance: "error",
+            autoDismissTimeout: 10000
+          });
+          console.error(error);
+          toggleEditing(false);
+        }
+    }
+
     toggleEditing(false);
   }, [
     chainId,
@@ -440,7 +1195,7 @@ const EditTokenContractView = () => {
               <div className="tw-font-bold tw-w-[50%]">Network</div>
               <div>{networkTypeList[chainId]}</div>
             </div>
-            {Number(action) == 0 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 1 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Router</div>
               <div>{routerTypeList[chainId]}</div>
             </div>}
@@ -455,18 +1210,18 @@ const EditTokenContractView = () => {
               </div>
             </div>
 
-            {Number(action) == 0 && <>
+            {Number(action) == 1 && <>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Token Amount</div>
-                <div>{tokenAmount === 0 ? "-" : `${tokenAmount} %`}</div>
+                <div>{tokenAmount === 0 ? "-" : `${tokenAmount}`}</div>
               </div>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">{chainId == 1 ? "ETH Amount" : "BNB Amount"}</div>
-                <div>{ETHAmount === 0 ? "-" : `${ETHAmount} %`}</div>
+                <div>{ETHAmount === 0 ? "-" : `${ETHAmount}`}</div>
               </div>
             </>}
 
-            {Number(action) == 1 && <>
+            {Number(action) == 2 && <>
               {/* Buy Fee Configs */}
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Marketing Buy Fee</div>
@@ -515,13 +1270,13 @@ const EditTokenContractView = () => {
             </>}
 
             {/* Max Transaction and Wallet Amount */}
-            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 5 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">
                 Max Transaction Amount
               </div>
               <div>{maxTransAmount} %</div>
             </div>}
-            {Number(action) == 3 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Max Wallet Amount</div>
               <div>{maxWalletAmount} %</div>
             </div>}
@@ -561,7 +1316,7 @@ const EditTokenContractView = () => {
               <div className="tw-font-bold tw-w-[50%]">Network</div>
               <div>{networkTypeList[chainId]}</div>
             </div>
-            {Number(action) == 0 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 1 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Router</div>
               <div>{routerTypeList[chainId]}</div>
             </div>}
@@ -575,7 +1330,7 @@ const EditTokenContractView = () => {
                   : tokenAddress}
               </div>
             </div>
-            {Number(action) == 2 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 3 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">New Owner Address</div>
               <div>
                 {ownerAddress.length === 0
@@ -586,27 +1341,27 @@ const EditTokenContractView = () => {
               </div>
             </div>}
 
-            {Number(action) == 0 && <>
+            {Number(action) == 1 && <>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Token Amount</div>
-                <div>{tokenAmount === 0 ? "-" : `${tokenAmount} %`}</div>
+                <div>{tokenAmount === 0 ? "-" : `${tokenAmount}`}</div>
               </div>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">{chainId == 1 ? "ETH Amount" : "BNB Amount"}</div>
-                <div>{ETHAmount === 0 ? "-" : `${ETHAmount} %`}</div>
+                <div>{ETHAmount === 0 ? "-" : `${ETHAmount}`}</div>
               </div>
             </>}
 
-            {Number(action) == 1 && <>
+            {Number(action) == 2 && <>
               {/* Buy Fee Configs */}
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Marketing Fee</div>
                 <div>{marketingFee === 0 ? "-" : `${marketingFee} %`}</div>
               </div>
-              <div className="tw-flex tw-mb-2">
+              {/* <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Dev Fee</div>
                 <div>{devFee === 0 ? "-" : `${devFee} %`}</div>
-              </div>
+              </div> */}
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Lp Fee</div>
                 <div>{lpFee === 0 ? "-" : `${lpFee} %`}</div>
@@ -621,22 +1376,22 @@ const EditTokenContractView = () => {
                 <div className="tw-font-bold tw-w-[50%]">Total Fee</div>
                 <div>
                   {
-                    marketingFee + devFee + lpFee + reflectionFee === 0 
+                    marketingFee + lpFee + reflectionFee === 0 
                     ? "-" 
-                    : `${marketingFee + devFee + lpFee + reflectionFee} %`
+                    : `${marketingFee + lpFee + reflectionFee} %`
                   }
                 </div>
               </div>
             </>}
 
             {/* Max Transaction and Wallet Amount */}
-            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 5 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">
                 Max Transaction Amount
               </div>
               <div>{maxTransAmount} %</div>
             </div>}
-            {Number(action) == 3 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Max Wallet Amount</div>
               <div>{maxWalletAmount} %</div>
             </div>}
@@ -676,7 +1431,7 @@ const EditTokenContractView = () => {
               <div className="tw-font-bold tw-w-[50%]">Network</div>
               <div>{networkTypeList[chainId]}</div>
             </div>
-            {Number(action) == 0 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 1 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Router</div>
               <div>{routerTypeList[chainId]}</div>
             </div>}
@@ -691,18 +1446,18 @@ const EditTokenContractView = () => {
               </div>
             </div>
 
-            {Number(action) == 0 && <>
+            {Number(action) == 1 && <>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Token Amount</div>
-                <div>{tokenAmount === 0 ? "-" : `${tokenAmount} %`}</div>
+                <div>{tokenAmount === 0 ? "-" : `${tokenAmount}`}</div>
               </div>
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">{chainId == 1 ? "ETH Amount" : "BNB Amount"}</div>
-                <div>{ETHAmount === 0 ? "-" : `${ETHAmount} %`}</div>
+                <div>{ETHAmount === 0 ? "-" : `${ETHAmount}`}</div>
               </div>
             </>}
 
-            {Number(action) == 1 && <>
+            {Number(action) == 2 && <>
               {/* Fee Configs */}
               <div className="tw-flex tw-mb-2">
                 <div className="tw-font-bold tw-w-[50%]">Tax Fee</div>
@@ -727,13 +1482,13 @@ const EditTokenContractView = () => {
             </>}
 
             {/* Max Transaction and Wallet Amount */}
-            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 5 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">
                 Max Transaction Amount
               </div>
               <div>{maxTxAmount} %</div>
             </div>}
-            {Number(action) == 3 && <div className="tw-flex tw-mb-2">
+            {Number(action) == 4 && <div className="tw-flex tw-mb-2">
               <div className="tw-font-bold tw-w-[50%]">Max Sell Amount</div>
               <div>{sellMaxAmount} %</div>
             </div>}

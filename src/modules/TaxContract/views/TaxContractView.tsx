@@ -242,7 +242,7 @@ const TaxContractView = () => {
             )
             .on("confirmation", (confirmationNumber: number, recepit: any) => {
               const deployedAddress = recepit.events.CreateToken.returnValues
-                .tokenAddress as string;
+                .token as string;
               if (confirmationNumber === 1) {
                 addToast(
                   <p className="tw-m-4">
@@ -340,7 +340,7 @@ const TaxContractView = () => {
             )
             .on("confirmation", (confirmationNumber: number, recepit: any) => {
               const deployedAddress = recepit.events.CreateToken.returnValues
-                .tokenAddress as string;
+                .token as string;
               if (confirmationNumber === 1) {
                 addToast(
                   <p className="tw-m-4">
@@ -732,10 +732,6 @@ const TaxContractView = () => {
                 Max Transaction Amount
               </div>
               <div>{maxTxAmount} %</div>
-            </div>
-            <div className="tw-flex tw-mb-2">
-              <div className="tw-font-bold tw-w-[50%]">Max Sell Amount</div>
-              <div>{sellMaxAmount} %</div>
             </div>
           </div>
           <Button
