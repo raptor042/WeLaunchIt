@@ -255,6 +255,7 @@ export const EditTokenView: React.FC<Props> = memo<Props>(
               value={tokenAddress}
               setValue={setTokenAddress}
               placeholder="Enter a token address...."
+              validator={validateAddress}
             />
           </div>
           {Number(action) == 1 && <>

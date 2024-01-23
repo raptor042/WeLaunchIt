@@ -72,6 +72,15 @@ const EditTokenContractView = () => {
   const handleClick = useCallback(async () => {
     if (!isConnected) return;
 
+    const zeros = "000000000000000000";
+    const numberToBN = (_value: number) => {
+    let dotPosition = _value.toString().indexOf(".");
+    const value =
+      dotPosition === -1 ? _value.toString() + "." + zeros : _value + zeros;
+    if (dotPosition === -1) dotPosition = _value.toString().length;
+      return value.slice(0, dotPosition + 19).replace(/\D/g, "");
+    };
+
     if(action == 1) {
       console.log(tokenAddress.length)
       if (tokenAddress.length === 0) {
@@ -96,15 +105,6 @@ const EditTokenContractView = () => {
           pairERC20ABI.abi as any[],
           tokenAddress
         );
-
-        const zeros = "000000000000000000";
-        const numberToBN = (_value: number) => {
-          let dotPosition = _value.toString().indexOf(".");
-          const value =
-            dotPosition === -1 ? _value.toString() + "." + zeros : _value + zeros;
-          if (dotPosition === -1) dotPosition = _value.toString().length;
-          return value.slice(0, dotPosition + 19).replace(/\D/g, "");
-        };
 
         try {
           await _contract.methods
@@ -434,6 +434,7 @@ const EditTokenContractView = () => {
                   </p>,
                   { appearance: "success", autoDismissTimeout: 10000 }
                 );
+                toggleEditing(false);
               }
             })
             .on("error", (error: any) => {
@@ -441,6 +442,7 @@ const EditTokenContractView = () => {
                 appearance: "error",
                 autoDismissTimeout: 10000
               });
+              toggleEditing(false);
             });
         } catch (error) {
           addToast("Failed to update taxes", {
@@ -801,7 +803,7 @@ const EditTokenContractView = () => {
         try {
             await contract.methods
             .updateMaxWalletAmount(
-              maxWalletAmount
+              numberToBN(maxWalletAmount)
             )
             .send({
               from: account
@@ -975,7 +977,7 @@ const EditTokenContractView = () => {
         try {
             await contract.methods
             .updateMaxTransactionAmount(
-              maxTxAmount
+              numberToBN(maxTxAmount)
             )
             .send({
               from: account

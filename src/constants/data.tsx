@@ -149,7 +149,7 @@ export const actionList: { [key: number]: any } = {
   2: {
     1: "Add Liquidity", 
     2: "Update Taxes", 
-    3: "Renounce Ownership", 
+    3: "Transfer Ownership", 
     4: "Update Max Wallet", 
     5: "Update Max Tx"
   },
